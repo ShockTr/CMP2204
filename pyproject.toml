@@ -1,0 +1,21 @@
+[project]
+name = "p2chat"
+version = "0.1.0"
+description = "Team BDK's CMP2204 project"
+requires-python = ">=3.12"
+dependencies = [
+    "hatchling>=1.27.0",
+    "textual>=3.1.0",
+]
+
+[project.scripts]
+p2chat = "p2chat.__main__:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[dependency-groups]
+dev = [
+    "textual-dev>=1.7.0",
+]
