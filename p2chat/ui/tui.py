@@ -1,6 +1,8 @@
 from textual.app import App, ComposeResult
-from textual.widgets import Footer, Header, Static
+from textual.widgets import Footer, Header, Static, Placeholder
 from textual.containers import Container, Horizontal, Vertical, VerticalScroll
+
+from p2chat.ui.widgets.Sidebar import Sidebar
 
 
 class p2chatApp(App):
@@ -11,5 +13,7 @@ class p2chatApp(App):
 
     def compose(self) -> ComposeResult:
         yield Header()
-        yield Static("Content goes here!")
+        with Horizontal():
+            yield Sidebar()
+            yield Placeholder()
         yield Footer()
