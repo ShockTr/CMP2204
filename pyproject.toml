@@ -5,6 +5,7 @@ description = "Team BDK's CMP2204 project"
 requires-python = ">=3.12"
 dependencies = [
     "hatchling>=1.27.0",
+    "pydes>=2.0.1",
     "textual>=3.1.0",
 ]
 
