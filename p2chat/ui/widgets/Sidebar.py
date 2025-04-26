@@ -2,6 +2,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from time import time
 
+from textual.message import Message
 from textual.renderables.gradient import LinearGradient
 from textual.widgets import Input, Static, OptionList, Button
 from textual.widgets.option_list import Option
@@ -33,23 +34,9 @@ USERS = [
     User("TEST4", "3131", datetime.now()),
 ]
 
-
-class ChatWindow(Static):
-    """Sağ tarafta açılacak sohbet penceresi."""
-
-    def __init__(self, user: User):
-        super().__init__()
-        self.user = user
-
-    def compose(self) -> ComposeResult:
-        yield Static(f"Chat with {self.user.username}", classes="chat_window_header")
-        yield Static("Chat content here...", classes="chat_window_content")
-        yield Input(placeholder="Type a message...", id="chat_input" ,classes="chat_window_input")
-
-    def on_mount(self):
-        self.styles.width = "100%"
-        self.styles.height = "100%"
-        #renk unutma
+@dataclass
+class ChatOpened(Message):
+    user: User
 
 class Sidebar(Static):
     def compose(self) -> ComposeResult:
@@ -61,16 +48,10 @@ class Sidebar(Static):
             )
 
     def on_option_list_option_selected(self, event: OptionList.OptionSelected):
-        selected_option = event.option
-        if isinstance(selected_option, SidebarChatListItem):
-            chat_window = ChatWindow(selected_option.user)
-            parent_container = self.parent
-            if isinstance(parent_container, Container) or isinstance(parent_container, Horizontal):
-                for child in parent_container.children:
-                    if isinstance(child, ChatWindow):
-                        child.remove()
-                # Mount the new chat window
-                parent_container.mount(chat_window)
+        if event.option:
+            user = event.option.user
+            self.post_message(ChatOpened(user))
+
 
     def on_mount(self):
         self.styles.dock = "left"

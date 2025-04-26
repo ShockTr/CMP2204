@@ -49,11 +49,10 @@ class SearchWithIpRenderable:
     def __rich_console__(
         self, console: Console, options: ConsoleOptions
     ) -> RenderResult:
-        if self.user.getStatus() == "Online":
-            text = Text()
-            text.append(f"{self.user.username}\n", style="bold center", )
-            text.append(f"{self.user.getStatus()}", style="dim")
-            yield text
+        text = Text()
+        text.append(f"{self.user.username}\n", style="bold center", )
+        text.append(f"{self.user.getStatus()}", style="dim")
+        yield text
 
 class SearchWithIpItem(Option):
     def __init__(self, user: User):

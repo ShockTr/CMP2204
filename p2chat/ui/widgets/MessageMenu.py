@@ -20,7 +20,7 @@ class MessageMenu(Static):
 
     def compose(self) -> ComposeResult:
         with Vertical():
-            self.message_list = VerticalScroll(Static("Beginning of a great conversation..."),classes="message_list")
+            self.message_list = VerticalScroll(Static(f"Beginning of a great conversation... User {self.user.username}"),classes="message_list")
             yield self.message_list
 
             self.input= Input(placeholder="Send a message from here...", classes="message_input")

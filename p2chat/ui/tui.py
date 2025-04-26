@@ -1,9 +1,10 @@
+from textual import on
 from textual.app import App, ComposeResult
 from textual.widgets import Footer, Header, Static
 from p2chat.ui.widgets.ChangeName import ChangeNameScreen
 from textual.containers import Horizontal, Vertical
 
-from p2chat.ui.widgets.Sidebar import Sidebar
+from p2chat.ui.widgets.Sidebar import Sidebar, ChatOpened
 from p2chat.ui.widgets.MessageMenu import MessageMenu
 from p2chat.ui.widgets.LogDisplay import LogDisplay
 from p2chat.util.announce import start_announce_presence_thread
@@ -17,6 +18,7 @@ class p2chatApp(App):
         ("q", "quit", "Quit"),
         ("c", "change_name", "Change Name")
     ]
+    currentChatUser = None
 
     def __init__(self):
         super().__init__()
@@ -31,10 +33,28 @@ class p2chatApp(App):
         yield Header()
         with Horizontal():
             yield Sidebar()
-            yield MessageMenu(User("SenTest", "255.255.1.1", datetime.now()))
+            with Vertical(id="chat_window"):
+                yield MessageMenu(User("SenTest", "255.255.1.1", datetime.now()))
             with Vertical(id="right_panel"):
                 yield self.log_display
         yield Footer()
+
+    @on(ChatOpened)
+    async def openChat(self, event: ChatOpened):
+        if event.user != self.currentChatUser:
+            self.currentChatUser = event.user
+            
+            # Chat window container'ını bul
+            chat_window = self.query_one("#chat_window")
+            
+            # Mevcut MessageMenu widget'ını bul ve kaldır
+            existing_menu = chat_window.query("MessageMenu")
+            if existing_menu:
+                existing_menu.first().remove()
+            
+            # Seçilen kullanıcı ile yeni bir MessageMenu oluştur ve ekle
+            new_menu = MessageMenu(event.user)
+            await chat_window.mount(new_menu)
 
     def action_change_name(self):
         self.push_screen(ChangeNameScreen())

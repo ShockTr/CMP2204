@@ -8,7 +8,6 @@ class User:
     username: str
     ip_address: str
     last_seen: datetime
-    last_message: datetime
     def __init__(self, username: str, ip_address: str, last_seen: datetime):
         self.username = username
         self.ip_address = ip_address
