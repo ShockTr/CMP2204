@@ -102,7 +102,7 @@
 
 #right_panel {
     height: 100%;
-    width: 18%;
+    width: 15%;
     dock: right;
 }
 
@@ -117,9 +117,6 @@
     border: round $primary;
 }
 
-.message-panel {
-    width: 75%;
-}
 .sidebar {
     width: 25%;
 }

@@ -1,8 +1,7 @@
 from textual.app import App, ComposeResult
-from textual.widgets import Footer, Header, Static, Placeholder
-from textual.containers import Container, Horizontal, Vertical, VerticalScroll
+from textual.widgets import Footer, Header, Static
 from p2chat.ui.widgets.ChangeName import ChangeNameScreen
-from textual.containers import Container, Horizontal, Vertical
+from textual.containers import Horizontal, Vertical
 
 from p2chat.ui.widgets.Sidebar import Sidebar
 from p2chat.ui.widgets.MessageMenu import MessageMenu
@@ -23,7 +22,7 @@ class p2chatApp(App):
         super().__init__()
         self.announce_thread = None
         self.announce_stop_event = None
-        self.log_display = None
+        self.log_display = LogDisplay(id="log_display")
         # Initialize the global variable
         global announceName
         announceName = "Anonymous"
@@ -31,14 +30,9 @@ class p2chatApp(App):
     def compose(self) -> ComposeResult:
         yield Header()
         with Horizontal():
-            with Vertical(classes="sidebar"):
-                yield Sidebar()
-            with Vertical(classes="message-panel"):
-                yield MessageMenu(User("SenTest", "255.255.1.1", datetime.now()))
-            #degistirmeyi unutma biraz karisti aq bura aglayacam
+            yield Sidebar()
+            yield MessageMenu(User("SenTest", "255.255.1.1", datetime.now()))
             with Vertical(id="right_panel"):
-                # ChatWindow will replace this when a chat is selected
-                self.log_display = LogDisplay(id="log_display")
                 yield self.log_display
         yield Footer()
 
