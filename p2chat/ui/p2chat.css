@@ -1,3 +1,107 @@
 .sidebar_chat_list {
     margin-bottom: 3;
+    height: 100%;
+    min-height: 100%;
+    overflow-y: auto;
+
+}
+
+.sidebar_vertical {
+    height: 100%;
+    min-height: 100%;
+    overflow: hidden;
+}
+
+.sidebar_search_button {
+    width: 100%;
+    margin-left: 1;
+    margin-right: 1;
+}
+
+.SearchWithIp_search_input {
+    width: 40%;
+}
+
+.SearchWithIp_screen {
+    width: 40%;
+    height: 30%;
+    margin-bottom: 3;
+}
+
+.SearchWithIp_wrapper {
+    align: center middle;
+}
+
+.change_name_screen {
+    width: 60%;
+    height: 30%;
+    padding: 1;
+}
+
+.change_name_wrapper{
+    align: center middle;
+}
+
+.change_name_label {
+    text-align: center;
+    margin-bottom: 1;
+
+}
+
+#change_name_input {
+    margin-bottom: 1;
+}
+
+#change_name_submit {
+    width: 100%;
+    margin-top: 1;
+}
+
+.chat_window_content {
+    width: 100%;
+    align: center middle;
+}
+
+.chat_window_header {
+    padding: 1;
+    text-align: center;
+}
+
+.chat_window_input {
+    width: 100%;
+
+    margin-right: 1;
+    margin-left: 1;
+    align: center bottom;
+}
+
+#chat_input {
+    dock: bottom;
+    margin-bottom: 1;
+}
+
+/* silinecek sonra */
+#log_display {
+    height: 100%;
+    width: 100%;
+    border: solid green;
+    background: #333333;
+}
+
+#log_scroll {
+    height: 100%;
+    width: 100%;
+    overflow-y: auto;
+    dock: right;
+}
+
+#log_content {
+    padding: 1;
+    dock: right;
+}
+
+#right_panel {
+    height: 100%;
+    width: 18%;
+    dock: right;
 }

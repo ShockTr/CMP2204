@@ -35,4 +35,3 @@ class Message:
     author: User
     content: MessageContent
     timestamp: datetime
-
