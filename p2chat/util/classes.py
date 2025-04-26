@@ -24,10 +24,16 @@ class User:
             return "Offline"
 
 @dataclass
+class KeyExchange:
+    senderKey: str
+    receiverKey: str
+    key: str
+
+@dataclass
 class MessageContent:
     unencrypted_message: str = None
     encrypted_message: str = None
-    key: str = None
+    key: KeyExchange = None
 
 @dataclass
 class Message:

@@ -1,4 +1,11 @@
-### Example user template template
+# Project specific
+p2chat/users.json
+p2chat/history/*.json
+
+
+
+
+## Example user template template
 ### Example user template
 
 # IDE specific files
