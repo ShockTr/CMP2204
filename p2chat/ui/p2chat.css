@@ -1,3 +1,25 @@
 .sidebar_chat_list {
     margin-bottom: 3;
 }
+.message_list {
+    height: 100%;
+    background: $surface;
+    padding: 1;
+}
+
+.message_input {
+    dock: bottom;
+    border: round $primary;
+}
+
+.message-panel {
+    width: 75%;
+}
+.sidebar {
+    width: 25%;
+}
+
+.chat_message {
+    padding: 0 1;
+    color: green;
+}

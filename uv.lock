@@ -377,6 +377,7 @@ version = "0.1.0"
 source = { editable = "." }
 dependencies = [
     { name = "hatchling" },
+    { name = "pydes" },
     { name = "textual" },
 ]
 
@@ -388,6 +389,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "hatchling", specifier = ">=1.27.0" },
+    { name = "pydes", specifier = ">=2.0.1" },
     { name = "textual", specifier = ">=3.1.0" },
 ]
 
@@ -486,6 +488,12 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/cb/8f/50ad8599399d1861b4d2b6b45271f0ef6af1b09b0a2386a46dbaf19c9535/propcache-0.3.1-cp313-cp313t-win_amd64.whl", hash = "sha256:e7fb9a84c9abbf2b2683fa3e7b0d7da4d8ecf139a1c635732a8bda29c5214b0e", size = 46757 },
     { url = "https://files.pythonhosted.org/packages/b8/d3/c3cb8f1d6ae3b37f83e1de806713a9b3642c5895f0215a62e1a4bd6e5e34/propcache-0.3.1-py3-none-any.whl", hash = "sha256:9a8ecf38de50a7f518c21568c80f985e776397b902f1ce0b01f799aba1608b40", size = 12376 },
 ]
+
+[[package]]
+name = "pydes"
+version = "2.0.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/92/5e/0075a35ea5d307a182b0963900298b209ea2f363ccdd5a27e8cb04c58410/pyDes-2.0.1.tar.gz", hash = "sha256:e2ab8e21d2b83e90d90dbfdcb6fb8ac0000b813238b7ecaede04f8435c389012", size = 9878 }
 
 [[package]]
 name = "pygments"
