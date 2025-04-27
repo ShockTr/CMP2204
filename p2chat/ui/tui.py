@@ -8,6 +8,7 @@ from p2chat.ui.widgets.Sidebar import Sidebar, ChatOpened
 from p2chat.ui.widgets.MessageMenu import MessageMenu
 from p2chat.ui.widgets.LogDisplay import LogDisplay
 from p2chat.util.announce import start_announce_presence_thread
+from p2chat.util.peer_discovery import start_peer_discovery
 
 from p2chat.util.classes import User
 from datetime import datetime
@@ -24,6 +25,9 @@ class p2chatApp(App):
         super().__init__()
         self.announce_thread = None
         self.announce_stop_event = None
+        self.peer_listener_thread = None
+        self.peer_save_thread = None
+        self.peer_stop_event = None
         self.log_display = LogDisplay(id="log_display")
         # Initialize the global variable
         global announceName
@@ -39,19 +43,32 @@ class p2chatApp(App):
                 yield self.log_display
         yield Footer()
 
+    def on_mount(self):
+        # Start peer discovery
+        self.peer_listener_thread, self.peer_save_thread, self.peer_stop_event = start_peer_discovery(self.log_message)
+
+    def on_unmount(self):
+        # Stop peer discovery
+        if self.peer_stop_event:
+            self.peer_stop_event.set()
+
+        # Stop announce thread
+        if self.announce_stop_event:
+            self.announce_stop_event.set()
+
     @on(ChatOpened)
     async def openChat(self, event: ChatOpened):
         if event.user != self.currentChatUser:
             self.currentChatUser = event.user
-            
             # Chat window container'ını bul
+
             chat_window = self.query_one("#chat_window")
-            
             # Mevcut MessageMenu widget'ını bul ve kaldır
+
             existing_menu = chat_window.query("MessageMenu")
             if existing_menu:
                 existing_menu.first().remove()
-            
+
             # Seçilen kullanıcı ile yeni bir MessageMenu oluştur ve ekle
             new_menu = MessageMenu(event.user)
             await chat_window.mount(new_menu)

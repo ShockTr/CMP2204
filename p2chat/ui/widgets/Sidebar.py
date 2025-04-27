@@ -14,25 +14,8 @@ from rich.padding import Padding
 from rich.text import Text
 from p2chat.ui.widgets.SearhForIp import SearchWithIp
 from p2chat.util.classes import User
-
-USERS = [
-    User("emre", "3131", datetime.now()),
-    User("anil", "3131", datetime.now()),
-    User("yunus", "3131", datetime.now()),
-    User("eren", "3131", datetime.now()),
-    User("emirhan", "3131", datetime.now()),
-    User("kaan", "3131", datetime.now()),
-    User("yigit", "3131", datetime.now()),
-    User("emir", "3131", datetime.now()),
-    User("deniz", "3131", datetime.now()),
-    User("TEST4", "3131", datetime.now()),
-    User("TEST4", "3131", datetime.now()),
-    User("TEST4", "3131", datetime.now()),
-    User("TEST4", "3131", datetime.now()),
-    User("TEST4", "3131", datetime.now()),
-    User("TEST4", "3131", datetime.now()),
-    User("TEST4", "3131", datetime.now()),
-]
+from p2chat.util.peer_discovery import get_discovered_users
+from p2chat.ui.widgets.SearhForIp import get_selected_users
 
 @dataclass
 class ChatOpened(Message):
@@ -40,10 +23,11 @@ class ChatOpened(Message):
 
 class Sidebar(Static):
     def compose(self) -> ComposeResult:
+        discovered_users = get_discovered_users()
         with Vertical(classes="sidebar_vertical"):
             yield Button("Search", id="search_button", classes="sidebar_search_button")
             yield OptionList(
-                *(item for pair in zip([SidebarChatListItem(user) for user in USERS], [None] * len(USERS)) for item in pair if item),
+                *(item for pair in zip([SidebarChatListItem(user) for user in discovered_users], [None] * len(discovered_users)) for item in pair if item),
                 classes="sidebar_chat_list",
             )
 
@@ -52,12 +36,29 @@ class Sidebar(Static):
             user = event.option.user
             self.post_message(ChatOpened(user))
 
-
+    #user listi guncelemek icin. Awayi guncellememe sorunuda cozdu rendera gerek yokmus xd
     def on_mount(self):
         self.styles.dock = "left"
         self.styles.width = "25"
         self.styles.height = "100%"
         self.auto_refresh = 1 / 30
+        # Set a timer to refresh the user list every 5 seconds
+        self.set_interval(1, self.refresh_user_list)
+
+    #şuan ipye gore sıralamadıgımız ıcın isim degisince farklı bır kullanıcı gıbı sayıyor ve zaten suan sadece kendını goruyor
+    def refresh_user_list(self):
+        #Refresh the list of users in the sidebar
+        
+        selected_user_to_add = get_selected_users()
+        option_list = self.query_one(".sidebar_chat_list", OptionList)
+
+        # Clear the current list
+        option_list.clear_options()
+
+        # Add the discovered users to the list
+        for user in selected_user_to_add:
+            option_list.add_option(SidebarChatListItem(user))
+
 
     def on_button_pressed(self, event: Button.Pressed):
         if event.button.id == "search_button":
