@@ -1,0 +1,88 @@
+import json
+import os.path
+import socket
+from datetime import datetime
+from threading import Thread
+import p2chat.util.encryption as encryption
+from p2chat.util.classes import KeyExchange, MessageContent, Message, User
+
+
+def handleClient(conn: socket.socket, addr):
+    print(f"New connection from {addr}")
+
+    # When merging with peerDiscovery branch proper username will be fetched
+    user = User("Unknown", addr[0], datetime.now())
+
+    KEYEXCHANGE = False
+    key: KeyExchange = None
+    messageContent: MessageContent = None
+    while True:
+        try:
+            data = conn.recv(2048)
+            if not data:
+                break
+
+            jsonData: dict
+            try:
+                jsonData = json.loads(data.decode())
+            except json.JSONDecodeError:
+                print("Invalid JSON received")
+                break
+
+            if ('key' in jsonData):
+                if not KEYEXCHANGE:
+                    recievedKey = jsonData['key']
+                    privateKey = encryption.generate_private_key()
+
+                    try :
+                        conn.send(json.dumps({'key': encryption.generate_public_key(privateKey)}).encode())
+                    except Exception as e:
+                        print(f"Error sending key: {e}")
+                        break
+                    KEYEXCHANGE = True
+                    key = KeyExchange(recievedKey, privateKey)
+                else:
+                    print(f"Key exchange already done from {addr}")
+                    break
+            else:
+                messageContent = MessageContent(jsonData.get('unencrypted_message', ""), jsonData.get('encrypted_message', ""), key)
+
+        except Exception as e:
+            print(f"Error: {e}")
+            break
+    conn.close()
+    finalMessage = Message(user, messageContent, datetime.now())
+
+    if not os.path.isfile(f"history/{user.userId}.json"):
+        with open(f"history/{user.userId}.json", "w") as f:
+            dflt = {
+                "messages": []
+            }
+            json.dump(dflt, f)
+
+    with open(f"history/{user.userId}.json", "r+") as f:
+        history = json.load(f)
+        f.seek(0)
+        history["messages"].append(finalMessage.toJSON())
+        print(history)
+        json.dump(history, f, indent=4)
+
+
+    print(f"Connection closed from {addr}")
+
+
+def listenChatMessages(port=6001) -> None:
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.bind(('', port))
+
+    sock.listen()
+    print(f"Listening for connections on port {port}")
+
+    while True:
+        conn, addr = sock.accept()
+
+        thread = Thread(target=handleClient, args=(conn, addr))
+        thread.start()
+
+if __name__ == '__main__':
+    listenChatMessages()
