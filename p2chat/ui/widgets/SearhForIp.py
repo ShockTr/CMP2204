@@ -31,7 +31,7 @@ class SearchWithIp(Screen):
         search_text = event.value.lower()
         self.filter_user_list(search_text)
 
-    # REFRESHLENINCE BOZULUYOR TEKRAR INPUTUN DEGISMESI LAZIM
+    #REFRESHLENINCE BOZULUYOR TEKRAR INPUTUN DEGISMESI LAZIM
     def filter_user_list(self, search_text: str) -> None:
         discovered_users = get_discovered_users()
         option_list = self.query_one(".SearchWithIp_screen", OptionList)
@@ -46,32 +46,10 @@ class SearchWithIp(Screen):
         for user in filtered_users:
             option_list.add_option(SearchWithIpItem(user))
 
-    # SUBMITLENDIGINDE SECMESI YAPILACAK
+    #SUBMITLENDIGINDE SECMESI YAPILACAK
     @on(Input.Submitted)
     def choose_user(self, event: Input.Submitted) -> None:
-        # When user presses Enter, check if there are matching users
-        search_text = event.value.lower()
-        discovered_users = get_discovered_users()
-
-        # Find matching users
-        filtered_users = [
-            user for user in discovered_users
-            if (search_text in user.username.lower() or
-                search_text in user.ip_address.lower())
-        ]
-
-        option_list = self.query_one(".SearchWithIp_screen", OptionList)
-
-        # If there are matching users, focus the option list
-        if filtered_users:
-            # Update the option list with filtered users
-            self.filter_user_list(search_text)
-            # Focus the option list so user can select from options
-            option_list.focus()
-
-            # If there's only one match, select it automatically
-            if len(filtered_users) == 1:
-                option_list.action_select()  # Select the first (and only) option
+        pass
 
     # userlisti guncellemek icin
     def on_mount(self):

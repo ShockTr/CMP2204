@@ -13,7 +13,7 @@ class User:
         self.ip_address = ip_address
         self.last_seen = last_seen
         self.userId = hashlib.md5(f"{ip_address}:{username}".encode()).hexdigest()
-
+    # degismesi lazim online olmasina ragmen 10 saniye gecince away atiyor
     def getStatus(self):
         diff = datetime.now() - self.last_seen
         if diff.total_seconds() < 10:
