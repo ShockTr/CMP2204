@@ -4,6 +4,7 @@ from textual.widgets import Footer, Header, Static
 from p2chat.ui.widgets.ChangeName import ChangeNameScreen
 from textual.containers import Horizontal, Vertical
 
+from p2chat.ui.widgets.SearhForIp import SearchWithIp
 from p2chat.ui.widgets.Sidebar import Sidebar, ChatOpened
 from p2chat.ui.widgets.MessageMenu import MessageMenu
 from p2chat.ui.widgets.LogDisplay import LogDisplay
@@ -17,7 +18,8 @@ class p2chatApp(App):
     CSS_PATH = "p2chat.css"
     BINDINGS = [
         ("q", "quit", "Quit"),
-        ("c", "change_name", "Change Name")
+        ("c", "change_name", "Change Name"),
+        ("s", "search_start", "Search")
     ]
     currentChatUser = None
 
@@ -99,3 +101,6 @@ class p2chatApp(App):
 
         # yeni baslat
         self.announce_thread, self.announce_stop_event = start_announce_presence_thread(new_name, self.log_message)
+
+    def action_search_start(self):
+        self.push_screen(SearchWithIp())

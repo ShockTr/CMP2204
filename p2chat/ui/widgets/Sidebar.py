@@ -48,15 +48,22 @@ class Sidebar(Static):
     #şuan ipye gore sıralamadıgımız ıcın isim degisince farklı bır kullanıcı gıbı sayıyor ve zaten suan sadece kendını goruyor
     def refresh_user_list(self):
         #Refresh the list of users in the sidebar
-        
+
         selected_user_to_add = get_selected_users()
+        discovered_users = get_discovered_users()
         option_list = self.query_one(".sidebar_chat_list", OptionList)
 
         # Clear the current list
         option_list.clear_options()
 
-        # Add the discovered users to the list
+        # Add the discovered users to the list, updating their last_seen time from discovered_users
         for user in selected_user_to_add:
+            # guncelle zamanı durmadan
+            for discovered_user in discovered_users:
+                if user.userId == discovered_user.userId:
+                    # away olmasını engelemek ıcın onlıne olanın
+                    user.last_seen = discovered_user.last_seen
+                    break
             option_list.add_option(SidebarChatListItem(user))
 
 
