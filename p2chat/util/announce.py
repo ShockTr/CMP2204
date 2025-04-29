@@ -23,7 +23,7 @@ def announce_presence(username, log_callback=None, stop_event=None):
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
     # Define the broadcast address and port
-    broadcast_address = ('255.255.255.255', 9879)
+    broadcast_address = ('255.255.255.255', 6000)
 
     # Enable the socket to send broadcast messages
     sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)

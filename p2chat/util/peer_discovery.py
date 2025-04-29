@@ -44,7 +44,7 @@ def handle_message(data, addr):
 
 
 # Function to listen for incoming UDP messages
-def listen_for_peers(port=9879):
+def listen_for_peers(port=6000):
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     sock.bind(('', port))
     print(f"Listening for peers on port {port}...")
