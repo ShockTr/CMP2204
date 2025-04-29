@@ -36,11 +36,11 @@ class User:
 class KeyExchange:
     senderKey: int
     receiverKey: int
-    key: str
+    key: int
     def __init__(self, senderKey: int, receiverKey: int):
         self.senderKey = senderKey
         self.receiverKey = receiverKey
-        self.key = base64.b64encode(encryption.generate_shared_secret(senderKey, receiverKey)).decode()
+        self.key = encryption.generate_shared_secret(senderKey, receiverKey)
 
 @dataclass
 class MessageContent:

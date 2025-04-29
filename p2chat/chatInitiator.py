@@ -57,12 +57,13 @@ def send_secure_message(target_ip, secret_number, message_text):
 
         try:
             private_key = int(secret_number)
+            public_key = encryption.generate_public_key(private_key)
         except ValueError:
             print("Secret number must be an integer.")
             s.close()
             return
 
-        s.send(json.dumps({"key": str(secret_number)}).encode())
+        s.send(json.dumps({"key": str(public_key)}).encode())
         response = s.recv(2048)
         if not response:
             print("No response for key exchange.")

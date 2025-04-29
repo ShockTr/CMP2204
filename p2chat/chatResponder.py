@@ -31,8 +31,9 @@ def handleClient(conn: socket.socket, addr, callback):
 
             if ('key' in jsonData):
                 if not KEYEXCHANGE:
-                    recievedKey = jsonData['key']
+                    recievedKey = int(jsonData['key'])
                     privateKey = encryption.generate_private_key()
+                    key = KeyExchange(recievedKey, privateKey)
 
                     try :
                         conn.send(json.dumps({'key': encryption.generate_public_key(privateKey)}).encode())
@@ -40,7 +41,6 @@ def handleClient(conn: socket.socket, addr, callback):
                         print(f"Error sending key: {e}")
                         break
                     KEYEXCHANGE = True
-                    key = KeyExchange(recievedKey, privateKey)
                 else:
                     print(f"Key exchange already done from {addr}")
                     break
