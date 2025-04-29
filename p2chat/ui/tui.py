@@ -18,7 +18,7 @@ from p2chat.ui.widgets.MessageMenu import MessageMenu
 from p2chat.ui.widgets.LogDisplay import LogDisplay
 from p2chat.util.announce import start_announce_presence_thread
 from p2chat.util.peer_discovery import start_peer_discovery
-
+import p2chat.util.announce
 from p2chat.util.classes import User, Message
 from datetime import datetime
 
@@ -27,7 +27,9 @@ class p2chatApp(App):
     BINDINGS = [
         ("q", "quit", "Quit"),
         ("c", "change_name", "Change Name"),
-        ("s", "search_start", "Search")
+        ("s", "search_start", "Search"),
+        ("t", "enable_secure", "Enable Secure"),
+        ("t", "disable_secure", "Disable Secure"),
     ]
     currentChatUser : Reactive[User] = Reactive(None)
 
@@ -41,8 +43,8 @@ class p2chatApp(App):
         self.log_display = LogDisplay(id="log_display")
         self.sock = None
         self.message_menu = None
-        global announceName
-        announceName = "Anonymous"
+        self.secure: Reactive[bool] = Reactive(True, bindings=True)
+        self.user = User(p2chat.util.announce.announceName, "localhost", datetime.now())
 
     def compose(self) -> ComposeResult:
         yield Header()
@@ -54,6 +56,17 @@ class p2chatApp(App):
                 yield self.log_display
         yield Footer()
 
+    def check_action(self, action: str, parameters: tuple[object, ...]) -> bool | None:
+        if action == "enable_secure":
+            return not self.secure
+        return True
+    def action_enable_secure(self):
+        self.secure = True
+        self.query_one(Footer).refresh(recompose=True)
+
+    def action_disable_secure(self):
+        self.secure = False
+        self.query_one(Footer).refresh(recompose=True)
 
     @on(ChatOpened)
     async def openChat(self, event: ChatOpened):
@@ -138,10 +151,10 @@ class p2chatApp(App):
             self.announce_stop_event.set()
 
     def update_user_name(self, new_name: str):
-        global announceName
-        announceName = new_name
+        p2chat.util.announce.announceName = new_name
+        self.app.user = User(new_name, "localhost", datetime.now())
         try:
-            self.query_one("#chat_window_header", Static).update(f"Chat as {announceName}")
+            self.query_one("#chat_window_header", Static).update(f"Chat as {new_name}")
         except Exception:
             pass
 

@@ -5,6 +5,8 @@ import time
 import threading
 from threading import Event
 
+announceName = "Me"
+
 def announce_presence(username, log_callback=None, stop_event=None):
     # Define the message to be sent
     message = {

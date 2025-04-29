@@ -37,10 +37,13 @@ class KeyExchange:
     senderKey: int
     receiverKey: int
     key: int
-    def __init__(self, senderKey: int, receiverKey: int):
+    def __init__(self, senderKey: int, receiverKey: int, key: int = None):
         self.senderKey = senderKey
         self.receiverKey = receiverKey
-        self.key = encryption.generate_shared_secret(senderKey, receiverKey)
+        if key is None:
+            self.key = encryption.generate_shared_secret(senderKey, receiverKey)
+        else:
+            self.key = key
 
 @dataclass
 class MessageContent:

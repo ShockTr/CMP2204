@@ -9,10 +9,13 @@ from textual import on
 from rich.markup import escape
 from rich.text import Text
 
-from p2chat.util.classes import User, MessageContent, Message
+from p2chat.util.classes import User, MessageContent, Message, KeyExchange
+from p2chat.chatInitiator import send_secure_message, send_unsecure_message
 
 from dataclasses import dataclass
 from datetime import datetime
+
+from p2chat.util.encryption import generate_private_key, decrypt_message
 
 
 class MessageMenu(Static):
@@ -35,7 +38,13 @@ class MessageMenu(Static):
             with open(path, "r") as f:
                 data = json.load(f)
                 for message in data["messages"]:
-                    messageContent = MessageContent(message["content"]["unencrypted_message"], message["content"]["encrypted_message"], message["content"].get("key"))
+                    if message["content"].get("key") is not None:
+                        messageContent = MessageContent(message["content"]["unencrypted_message"],
+                                                        message["content"]["encrypted_message"],
+                                                        KeyExchange(0, 0, int(message["content"].get("key", 0))))
+                    else:
+                        messageContent = MessageContent(message["content"]["unencrypted_message"],
+                                                        message["content"]["encrypted_message"])
                     author = User(message["author"]["username"], message["author"]["ip_address"], datetime.fromtimestamp(message["author"]["last_seen"]))
                     message = Message(author, messageContent, datetime.fromtimestamp(message["timestamp"]))
                     self.display_message(message)
@@ -45,16 +54,22 @@ class MessageMenu(Static):
         content = event.value.strip()
         if  content :
             message = Message(
-                author=self.user,
+                author=self.app.user,
                 content=MessageContent(unencrypted_message=content),
                 timestamp=datetime.now()
             )
 
             self.display_message(message)
             self.input.value = ""
+        if self.app.secure:
+            send_secure_message(self.user.ip_address, generate_private_key(), content)
+        else:
+            send_unsecure_message(self.user.ip_address, content)
 
     def display_message(self, message: Message) -> None:
         formatted = Text()
         formatted.append(f"[{message.author.username}]: ", style="bold")
+        if(message.content.encrypted_message):
+            formatted.append(f"{escape(decrypt_message(message.content.key.key, message.content.encrypted_message))}" )
         formatted.append(f"{escape(message.content.unencrypted_message)}" )
         self.message_list.mount(Label(formatted, classes="chat_message"))

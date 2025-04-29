@@ -1,15 +1,16 @@
+import binascii
 import json
 import socket
 from datetime import datetime
 import os
 from threading import Thread
-
+import p2chat.util.announce
 import p2chat.util.encryption as encryption
 from p2chat.util.classes import User, MessageContent, Message, KeyExchange
 
 def log_message(message: Message, userId: str):
 
-    history_dir = "history"
+    history_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), "history")
     if not os.path.isdir(history_dir):
         os.makedirs(history_dir)
 
@@ -36,7 +37,7 @@ def send_unsecure_message(target_ip, message_text):
 
         message_content = MessageContent(unencrypted_message=message_text)
         message = Message(
-            author=User("Me", socket.gethostbyname(socket.gethostname()), datetime.now()),
+            author=User(p2chat.util.announce.announceName, "localhost", datetime.now()),
             content=message_content,
             timestamp=datetime.now()
         )
@@ -44,7 +45,7 @@ def send_unsecure_message(target_ip, message_text):
         s.send(json.dumps({"unencrypted_message": message_text}).encode())
         s.close()
         print("Unsecure message sent successfully.")
-        log_message(message, message.author.userId)
+        log_message(message, binascii.hexlify(target_ip.encode()).decode())
 
     except Exception as e:
         raise e
@@ -89,7 +90,7 @@ def send_secure_message(target_ip, secret_number, message_text):
         )
 
         message = Message(
-            author=User("Me", socket.gethostbyname(socket.gethostname()), datetime.now()),
+            author=User(p2chat.util.announce.announceName, "localhost", datetime.now()),
             content=message_content,
             timestamp=datetime.now()
         )
@@ -97,7 +98,7 @@ def send_secure_message(target_ip, secret_number, message_text):
         s.send(json.dumps({"encrypted_message": encrypted_msg}).encode())
         s.close()
         print("Secure message sent successfully.")
-        log_message(message, message.author.userId)
+        log_message(message, binascii.hexlify(target_ip.encode()).decode())
 
     except Exception as e:
         raise e
@@ -119,6 +120,4 @@ def chat_session():
 
 if __name__ == "__main__":
     while True:
-        thread = Thread(target=chat_session)
-        thread.start()
-        thread.join()
+        chat_session()
