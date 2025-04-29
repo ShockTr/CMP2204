@@ -41,13 +41,13 @@ def send_unsecure_message(target_ip, message_text):
             timestamp=datetime.now()
         )
 
-        s.send(json.dumps(message_content.toJSON()).encode())
+        s.send(json.dumps({"unencrypted_message": message_content}).encode())
         s.close()
         print("Unsecure message sent successfully.")
         log_message(message, message.author.userId)
 
     except Exception as e:
-        print(f"Failed to send unsecure message: {e}")
+        raise e
 
 def send_secure_message(target_ip, secret_number, message_text):
     port = 6001
@@ -78,11 +78,11 @@ def send_secure_message(target_ip, secret_number, message_text):
         peer_pub_key = int(response_json["key"])
         shared_key = encryption.generate_shared_secret(peer_pub_key, private_key)
 
-        key_exchange = KeyExchange(str(secret_number), private_key)
+        key_exchange = KeyExchange(peer_pub_key, private_key)
         encrypted_msg = encryption.encrypt_message(shared_key, message_text)
 
         message_content = MessageContent(
-            unencrypted_message=message_text,
+            unencrypted_message="",
             encrypted_message=encrypted_msg,
             key=key_exchange
         )
@@ -93,13 +93,13 @@ def send_secure_message(target_ip, secret_number, message_text):
             timestamp=datetime.now()
         )
 
-        s.send(json.dumps(message_content.toJSON()).encode())
+        s.send(json.dumps({"encrypted_message": encrypted_msg}).encode())
         s.close()
         print("Secure message sent successfully.")
         log_message(message, message.author.userId)
 
     except Exception as e:
-        print(f"Failed to send secure message: {e}")
+        raise e
 
 def chat_session():
     print("Chat Initiator")

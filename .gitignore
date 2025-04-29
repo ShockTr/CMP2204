@@ -1,5 +1,5 @@
 # Project specific
-p2chat/users.json
+users.json
 p2chat/history/*.json
 
 

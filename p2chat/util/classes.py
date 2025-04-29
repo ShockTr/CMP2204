@@ -1,3 +1,4 @@
+import base64
 import binascii
 from datetime import datetime
 from dataclasses import dataclass
@@ -33,13 +34,13 @@ class User:
 
 @dataclass
 class KeyExchange:
-    senderKey: str
-    receiverKey: str
+    senderKey: int
+    receiverKey: int
     key: str
-    def __init__(self, senderKey: str, receiverKey: str):
+    def __init__(self, senderKey: int, receiverKey: int):
         self.senderKey = senderKey
         self.receiverKey = receiverKey
-        self.key = encryption.generate_shared_secret(senderKey, receiverKey)
+        self.key = base64.b64encode(encryption.generate_shared_secret(senderKey, receiverKey)).decode()
 
 @dataclass
 class MessageContent:
