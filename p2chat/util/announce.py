@@ -12,10 +12,6 @@ def announce_presence(username, log_callback=None, stop_event=None):
     message = {
         "username": username,
     }
-    hostname = socket.gethostname()
-    local_ip = socket.gethostbyname(hostname)
-    message["ip_address"] = local_ip
-
     # Convert the message to JSON format
     json_message = json.dumps(message)
 

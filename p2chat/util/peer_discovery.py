@@ -16,7 +16,7 @@ def handle_message(data, addr):
     message = data.decode('utf-8')
     try:
         message_data = json.loads(message)
-        ip_address = message_data.get('ip_address')
+        ip_address = addr[0]
         name = message_data.get('username')
         discovery_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
     except json.JSONDecodeError:
