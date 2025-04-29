@@ -5,13 +5,16 @@ from datetime import datetime
 from threading import Thread
 import p2chat.util.encryption as encryption
 from p2chat.util.classes import KeyExchange, MessageContent, Message, User
+from p2chat.util.peer_discovery import get_discovered_users
 
 
 def handleClient(conn: socket.socket, addr, callback):
     print(f"New connection from {addr}")
 
-    # When merging with peerDiscovery branch proper username will be fetched
     user = User("Unknown", addr[0], datetime.now())
+    users = get_discovered_users()
+    user = [user for user in users if user.ip_address == addr[0]][0]
+    # When merging with peerDiscovery branch proper username will be fetched
 
     KEYEXCHANGE = False
     key: KeyExchange = None
