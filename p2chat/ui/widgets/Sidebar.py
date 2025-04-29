@@ -16,22 +16,10 @@ from p2chat.ui.widgets.SearhForIp import SearchWithIp
 from p2chat.util.classes import User
 
 USERS = [
-    User("emre", "3131", datetime.now()),
-    User("anil", "3131", datetime.now()),
-    User("yunus", "3131", datetime.now()),
-    User("eren", "3131", datetime.now()),
-    User("emirhan", "3131", datetime.now()),
-    User("kaan", "3131", datetime.now()),
-    User("yigit", "3131", datetime.now()),
-    User("emir", "3131", datetime.now()),
-    User("deniz", "3131", datetime.now()),
-    User("TEST4", "3131", datetime.now()),
-    User("TEST4", "3131", datetime.now()),
-    User("TEST4", "3131", datetime.now()),
-    User("TEST4", "3131", datetime.now()),
-    User("TEST4", "3131", datetime.now()),
-    User("TEST4", "3131", datetime.now()),
-    User("TEST4", "3131", datetime.now()),
+    User("test31", "192.168.1.31", datetime.now()),
+    User("test21", "192.168.1.21", datetime.now()),
+    User("test11", "192.168.1.11", datetime.now()),
+
 ]
 
 @dataclass

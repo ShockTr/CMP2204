@@ -7,7 +7,7 @@ import p2chat.util.encryption as encryption
 from p2chat.util.classes import KeyExchange, MessageContent, Message, User
 
 
-def handleClient(conn: socket.socket, addr):
+def handleClient(conn: socket.socket, addr, callback):
     print(f"New connection from {addr}")
 
     # When merging with peerDiscovery branch proper username will be fetched
@@ -53,25 +53,26 @@ def handleClient(conn: socket.socket, addr):
     conn.close()
     finalMessage = Message(user, messageContent, datetime.now())
 
-    if not os.path.isfile(f"history/{user.userId}.json"):
-        with open(f"history/{user.userId}.json", "w") as f:
+    path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "history", f"{user.userId}.json")
+    if not os.path.isfile(path):
+        with open(path, "w") as f:
             dflt = {
                 "messages": []
             }
             json.dump(dflt, f)
 
-    with open(f"history/{user.userId}.json", "r+") as f:
+    with open(path, "r+") as f:
         history = json.load(f)
         f.seek(0)
         history["messages"].append(finalMessage.toJSON())
         print(history)
         json.dump(history, f, indent=4)
 
-
+    callback(finalMessage)
     print(f"Connection closed from {addr}")
 
 
-def listenChatMessages(port=6001) -> None:
+def listenChatMessages(messageCallback, port=6001) -> None:
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.bind(('', port))
 
@@ -81,8 +82,8 @@ def listenChatMessages(port=6001) -> None:
     while True:
         conn, addr = sock.accept()
 
-        thread = Thread(target=handleClient, args=(conn, addr))
+        thread = Thread(target=handleClient, args=(conn, addr, messageCallback))
         thread.start()
 
 if __name__ == '__main__':
-    listenChatMessages()
+    listenChatMessages(print)
