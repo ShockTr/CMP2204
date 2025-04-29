@@ -41,7 +41,7 @@ def send_unsecure_message(target_ip, message_text):
             timestamp=datetime.now()
         )
 
-        s.send(json.dumps({"unencrypted_message": message_content}).encode())
+        s.send(json.dumps({"unencrypted_message": message_text}).encode())
         s.close()
         print("Unsecure message sent successfully.")
         log_message(message, message.author.userId)
