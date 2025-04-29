@@ -12,10 +12,12 @@ from p2chat.chatResponder import listenChatMessages, handleClient
 from p2chat.ui.widgets.ChangeName import ChangeNameScreen
 from textual.containers import Horizontal, Vertical
 
+from p2chat.ui.widgets.SearhForIp import SearchWithIp
 from p2chat.ui.widgets.Sidebar import Sidebar, ChatOpened
 from p2chat.ui.widgets.MessageMenu import MessageMenu
 from p2chat.ui.widgets.LogDisplay import LogDisplay
 from p2chat.util.announce import start_announce_presence_thread
+from p2chat.util.peer_discovery import start_peer_discovery
 
 from p2chat.util.classes import User, Message
 from datetime import datetime
@@ -24,7 +26,8 @@ class p2chatApp(App):
     CSS_PATH = "p2chat.css"
     BINDINGS = [
         ("q", "quit", "Quit"),
-        ("c", "change_name", "Change Name")
+        ("c", "change_name", "Change Name"),
+        ("s", "search_start", "Search")
     ]
     currentChatUser : Reactive[User] = Reactive(None)
 
@@ -32,6 +35,9 @@ class p2chatApp(App):
         super().__init__()
         self.announce_thread = None
         self.announce_stop_event = None
+        self.peer_listener_thread = None
+        self.peer_save_thread = None
+        self.peer_stop_event = None
         self.log_display = LogDisplay(id="log_display")
         self.sock = None
         self.message_menu = None
@@ -48,16 +54,20 @@ class p2chatApp(App):
                 yield self.log_display
         yield Footer()
 
+
     @on(ChatOpened)
     async def openChat(self, event: ChatOpened):
         if event.user != self.currentChatUser:
             self.currentChatUser = event.user
 
+            # Chat window container'ını bul
             chat_window = self.query_one("#chat_window")
+            
+            # Mevcut MessageMenu widget'ını bul ve kaldır
             existing_menu = chat_window.query("MessageMenu")
             if existing_menu:
                 await existing_menu.first().remove()
-            
+
             new_menu = MessageMenu(event.user)
             self.message_menu = new_menu
             await chat_window.mount(new_menu)
@@ -108,6 +118,8 @@ class p2chatApp(App):
 
     def on_mount(self) -> None:
         self.start_listening_messages()
+        # Start peer discovery
+        self.peer_listener_thread, self.peer_save_thread, self.peer_stop_event = start_peer_discovery(self.log_message)
 
     def on_unmount(self) -> None:
         if self.sock:
@@ -116,10 +128,14 @@ class p2chatApp(App):
                 self.sock = None
             except Exception as e:
                 print(f"Error closing connection: {e}")
-        if self.announce_thread is not None and self.announce_stop_event is not None:
+
+        # Stop peer discovery
+        if self.peer_stop_event:
+            self.peer_stop_event.set()
+
+        # Stop announce thread
+        if self.announce_stop_event:
             self.announce_stop_event.set()
-            self.announce_thread = None
-            self.announce_stop_event = None
 
     def update_user_name(self, new_name: str):
         global announceName
@@ -139,4 +155,7 @@ class p2chatApp(App):
 
         # yeni baslat
         self.announce_thread, self.announce_stop_event = start_announce_presence_thread(new_name, self.log_message)
+
+    def action_search_start(self):
+        self.push_screen(SearchWithIp())
 

@@ -1,3 +1,4 @@
+from textual import on
 from textual.app import ComposeResult
 from textual.containers import Vertical
 from textual.screen import Screen
@@ -22,3 +23,13 @@ class ChangeNameScreen(Screen):
                 self.app.update_user_name(new_name)
 
             self.app.pop_screen()
+
+    #enter ise yarasin diye
+    @on(Input.Submitted)
+    def change_name(self, event: Input.Submitted) -> None:
+        content = event.value.strip()
+
+        if content:
+            self.app.update_user_name(content)
+
+        self.app.pop_screen()
