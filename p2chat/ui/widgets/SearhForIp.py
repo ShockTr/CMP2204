@@ -9,9 +9,9 @@ from textual.app import ComposeResult
 from textual.widgets._option_list import Option
 from p2chat.util.classes import User
 from p2chat.peerDiscovery import get_discovered_users
+from p2chat.util.history import get_users_with_history
 
-
-selected_users = []
+selected_users = get_users_with_history()
 
 class SearchWithIp(Screen):
     current_search = ""

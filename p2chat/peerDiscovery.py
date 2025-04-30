@@ -19,15 +19,15 @@ def handle_message(data, addr):
         message_data = json.loads(message)
         ip_address = addr[0]
         name = message_data.get('username')
-        discovery_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
+        current_time = datetime.now()
     except json.JSONDecodeError:
         print("Received invalid JSON data")
         return
 
-    peers[ip_address] = {'name': name, 'discovery_time': discovery_time}
+    peers[ip_address] = {'username': name, 'last_seen': current_time.timestamp()}
 
     # Create a User object and add it to discovered_users if not already present
-    current_time = datetime.now()
+
     new_user = User(name, ip_address, current_time)
 
     # Check if user already exists in the list
@@ -65,7 +65,7 @@ def save_peers_to_file(filename):
 
     for ip, info in peers.items():
         existing_peers[ip] = info
-        existing_peers[ip]["discovery_time"] = info["discovery_time"]
+        existing_peers[ip]["last_seen"] = info["last_seen"]
 
     with open(filename, 'w') as file:
         json.dump(existing_peers, file, indent=4)

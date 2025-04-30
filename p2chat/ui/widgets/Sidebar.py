@@ -57,6 +57,7 @@ class Sidebar(Static):
             for discovered_user in discovered_users:
                 if user.userId == discovered_user.userId:
                     # away olmasını engelemek ıcın onlıne olanın
+                    user.username = discovered_user.username
                     user.last_seen = discovered_user.last_seen
                     break
             option_list.add_option(SidebarChatListItem(user))
