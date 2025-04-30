@@ -44,7 +44,7 @@ class p2chatApp(App):
         self.sock = None
         self.message_menu = None
         self.secure: Reactive[bool] = Reactive(True, bindings=True)
-        self.user = User(p2chat.announce.announceName, "localhost", datetime.now())
+        self.user = User(p2chat.serviceAnnouncer.announceName, "localhost", datetime.now())
 
     def compose(self) -> ComposeResult:
         yield Header()
@@ -151,7 +151,7 @@ class p2chatApp(App):
             self.announce_stop_event.set()
 
     def update_user_name(self, new_name: str):
-        p2chat.announce.announceName = new_name
+        p2chat.serviceAnnouncer.announceName = new_name
         self.app.user = User(new_name, "localhost", datetime.now())
         try:
             self.query_one("#chat_window_header", Static).update(f"Chat as {new_name}")

@@ -36,7 +36,7 @@ def send_unsecure_message(target_ip, message_text):
 
         message_content = MessageContent(unencrypted_message=message_text)
         message = Message(
-            author=User(p2chat.announce.announceName, "localhost", datetime.now()),
+            author=User(p2chat.serviceAnnouncer.announceName, "localhost", datetime.now()),
             content=message_content,
             timestamp=datetime.now()
         )
@@ -89,7 +89,7 @@ def send_secure_message(target_ip, secret_number, message_text):
         )
 
         message = Message(
-            author=User(p2chat.announce.announceName, "localhost", datetime.now()),
+            author=User(p2chat.serviceAnnouncer.announceName, "localhost", datetime.now()),
             content=message_content,
             timestamp=datetime.now()
         )

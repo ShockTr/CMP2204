@@ -1,7 +1,7 @@
 import json
 import os
 
-from textual.widgets import Input, Static , Label
+from textual.widgets import Input, Static, Label, RichLog
 from textual.containers import Vertical, VerticalScroll
 from textual.app import ComposeResult
 from textual import on
@@ -26,7 +26,7 @@ class MessageMenu(Static):
 
     def compose(self) -> ComposeResult:
         with Vertical():
-            self.message_list = VerticalScroll(Static(f"Beginning of a great conversation... User {self.user.username}, ID: {self.user.userId}"),classes="message_list")
+            self.message_list = RichLog(auto_scroll=True, classes="message_list")
             yield self.message_list
 
             self.input= Input(placeholder="Send a message from here...", classes="message_input")
@@ -53,27 +53,43 @@ class MessageMenu(Static):
     def send_message(self, event: Input.Submitted) -> None:
         content = event.value.strip()
         if content:
-            message = Message(
-                author=self.app.user,
-                content=MessageContent(unencrypted_message=content),
-                timestamp=datetime.now()
-            )
+            self.input.disabled = True
+            message: Message
             try:
                 if self.app.secure:
-                    send_secure_message(self.user.ip_address, generate_private_key(), content)
+                    #send_secure_message(self.user.ip_address, generate_private_key(), content)
+                    message = Message(
+                        author=self.user,
+                        content=MessageContent(encrypted_message=content),
+                        timestamp=datetime.now()
+                    )
                 else:
-                    send_unsecure_message(self.user.ip_address, content)
+                    #send_unsecure_message(self.user.ip_address, content)
+                    message = Message(
+                        author=self.user,
+                        content=MessageContent(unencrypted_message=content),
+                        timestamp=datetime.now()
+                    )
                 self.display_message(message)
                 self.input.value = ""
             except Exception as e:
-                self.app.log.error(f"Error sending message: {e}")
+                self.app.log_message(f"Error sending message: {e}")
+            finally:
+                self.input.disabled = False
+                self.input.focus()
 
 
 
     def display_message(self, message: Message) -> None:
+        emojis = "🔒" if message.content.encrypted_message else "🔓"
+        emojis += "🔑" if message.content.key else ""
         formatted = Text()
-        formatted.append(f"[{message.author.username}]: ", style="bold")
-        if(message.content.encrypted_message):
-            formatted.append(f"{escape(decrypt_message(message.content.key.key, message.content.encrypted_message))}" )
-        formatted.append(f"{escape(message.content.unencrypted_message)}" )
-        self.message_list.mount(Label(formatted, classes="chat_message"))
+        formatted.append(message.timestamp.strftime('[%d.%m.%Y %H:%M]'), style="dimmed")
+        formatted.append(f" <{escape(message.author.username)} {emojis}>", style="bold")
+        if (message.content.encrypted_message):
+            formatted.append(f"{escape(decrypt_message(message.content.key.key, message.content.encrypted_message) if message.content.key else message.content.encrypted_message)}")
+        elif (message.content.unencrypted_message):
+            formatted.append(f"{escape(message.content.unencrypted_message)}")
+        else:
+            formatted.append("No message content", style="bold red")
+        self.message_list.write(formatted)
