@@ -6,6 +6,7 @@ from threading import Thread
 import p2chat.util.encryption as encryption
 from p2chat.util.classes import KeyExchange, MessageContent, Message, User
 from p2chat.peerDiscovery import get_discovered_users
+from p2chat.util.history import save_message
 
 
 def handleClient(conn: socket.socket, addr, callback):
@@ -55,22 +56,7 @@ def handleClient(conn: socket.socket, addr, callback):
             break
     conn.close()
     finalMessage = Message(user, messageContent, datetime.now())
-
-    path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "history", f"{user.userId}.json")
-    if not os.path.isfile(path):
-        with open(path, "w") as f:
-            dflt = {
-                "messages": []
-            }
-            json.dump(dflt, f)
-
-    with open(path, "r+") as f:
-        history = json.load(f)
-        f.seek(0)
-        history["messages"].append(finalMessage.toJSON())
-        print(history)
-        json.dump(history, f, indent=4)
-
+    save_message(user.userId, finalMessage)
     callback(finalMessage)
     print(f"Connection closed from {addr}")
 

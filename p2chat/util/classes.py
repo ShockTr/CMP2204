@@ -76,3 +76,14 @@ class Message:
             'content': self.content.toJSON(),
             'timestamp': self.timestamp.timestamp(),
         }
+
+    def fromJSON(message: dict[str, dict[str, str | float] | dict[str, str | int] | dict[str, str] | float]):
+        messageContent = MessageContent(message["content"]["unencrypted_message"],
+                                        message["content"]["encrypted_message"],
+                                        KeyExchange(0, 0, int(message["content"].get("key", 0)))
+                                        if message["content"].get("key") is not None
+                                        else None
+                                        )
+        author = User(message["author"]["username"], message["author"]["ip_address"],
+                      datetime.fromtimestamp(message["author"]["last_seen"]))
+        return Message(author, messageContent, datetime.fromtimestamp(message["timestamp"]))

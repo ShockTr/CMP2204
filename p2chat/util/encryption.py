@@ -21,7 +21,7 @@ def encrypt_message(shared_secret, message):
     des_key = str(shared_secret).ljust(24)
 
     cipher = pyDes.triple_des(des_key)
-    encrypted = cipher.encrypt(message, padmode=pyDes.PAD_PKCS5)
+    encrypted = cipher.encrypt(bytes(message, "utf-8"), padmode=pyDes.PAD_PKCS5)
     # byte string → base64 → str
     return base64.b64encode(encrypted).decode()
 

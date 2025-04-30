@@ -6,27 +6,10 @@ import os
 import p2chat.serviceAnnouncer
 import p2chat.util.encryption as encryption
 from p2chat.util.classes import User, MessageContent, Message, KeyExchange
+from p2chat.util.history import save_message
 
 def log_message(message: Message, userId: str):
-
-    history_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), "history")
-    if not os.path.isdir(history_dir):
-        os.makedirs(history_dir)
-
-    log_file = os.path.join(history_dir, f"{userId}.json")
-    message_record = message.toJSON()
-
-    if os.path.exists(log_file):
-        with open(log_file, "r+") as f:
-            data = json.load(f)
-            data["messages"].append(message_record)
-            f.seek(0)
-            json.dump(data, f, indent=4)
-            f.truncate()
-    else:
-        with open(log_file, "w") as f:
-            data = {"messages": [message_record]}
-            json.dump(data, f, indent=4)
+    save_message(userId, message)
 
 def send_unsecure_message(target_ip, message_text):
     port = 6001

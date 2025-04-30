@@ -1,6 +1,6 @@
 # Project specific
 p2chat/users.json
-p2chat/history/*.json
+p2chat/history/*.jsonl
 
 
 

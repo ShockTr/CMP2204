@@ -16,6 +16,7 @@ from dataclasses import dataclass
 from datetime import datetime
 
 from p2chat.util.encryption import generate_private_key, decrypt_message
+from p2chat.util.history import get_history
 
 
 class MessageMenu(Static):
@@ -33,21 +34,9 @@ class MessageMenu(Static):
             yield self.input
 
     def on_mount(self) -> None:
-        path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "..", "history", f"{self.user.userId}.json")
-        if os.path.isfile(path):
-            with open(path, "r") as f:
-                data = json.load(f)
-                for message in data["messages"]:
-                    if message["content"].get("key") is not None:
-                        messageContent = MessageContent(message["content"]["unencrypted_message"],
-                                                        message["content"]["encrypted_message"],
-                                                        KeyExchange(0, 0, int(message["content"].get("key", 0))))
-                    else:
-                        messageContent = MessageContent(message["content"]["unencrypted_message"],
-                                                        message["content"]["encrypted_message"])
-                    author = User(message["author"]["username"], message["author"]["ip_address"], datetime.fromtimestamp(message["author"]["last_seen"]))
-                    message = Message(author, messageContent, datetime.fromtimestamp(message["timestamp"]))
-                    self.display_message(message)
+        messages = get_history(self.user.userId, self.app.log_message)
+        for message in messages:
+            self.display_message(message)
 
     @on(Input.Submitted) # on ve input import edildi
     def send_message(self, event: Input.Submitted) -> None:
@@ -57,14 +46,14 @@ class MessageMenu(Static):
             message: Message
             try:
                 if self.app.secure:
-                    #send_secure_message(self.user.ip_address, generate_private_key(), content)
+                    send_secure_message(self.user.ip_address, generate_private_key(), content)
                     message = Message(
                         author=self.user,
                         content=MessageContent(encrypted_message=content),
                         timestamp=datetime.now()
                     )
                 else:
-                    #send_unsecure_message(self.user.ip_address, content)
+                    send_unsecure_message(self.user.ip_address, content)
                     message = Message(
                         author=self.user,
                         content=MessageContent(unencrypted_message=content),
