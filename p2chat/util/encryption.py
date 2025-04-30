@@ -18,16 +18,16 @@ def generate_shared_secret(received_key, private_key):
     return shared
 
 def encrypt_message(shared_secret, message):
-    des_key = str(shared_secret).zfill(8)[:8]
+    des_key = str(shared_secret).ljust(24)
 
-    cipher = pyDes.des(des_key, pyDes.ECB, padmode=pyDes.PAD_PKCS5)
-    encrypted = cipher.encrypt(message)
+    cipher = pyDes.triple_des(des_key)
+    encrypted = cipher.encrypt(message, padmode=pyDes.PAD_PKCS5)
     # byte string → base64 → str
     return base64.b64encode(encrypted).decode()
 
 def decrypt_message(shared_secret, encoded_ciphertext):
-    des_key = str(shared_secret).zfill(8)[:8]
+    des_key = str(shared_secret).ljust(24)
 
-    cipher = pyDes.des(des_key, pyDes.ECB, padmode=pyDes.PAD_PKCS5)
+    cipher = pyDes.triple_des(des_key)
     decoded_bytes = base64.b64decode(encoded_ciphertext.encode())
-    return cipher.decrypt(decoded_bytes).decode()
+    return cipher.decrypt(decoded_bytes, padmode=pyDes.PAD_PKCS5).decode()
