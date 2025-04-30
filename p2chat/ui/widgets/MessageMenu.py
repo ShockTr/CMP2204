@@ -52,19 +52,23 @@ class MessageMenu(Static):
     @on(Input.Submitted) # on ve input import edildi
     def send_message(self, event: Input.Submitted) -> None:
         content = event.value.strip()
-        if  content :
+        if content:
             message = Message(
                 author=self.app.user,
                 content=MessageContent(unencrypted_message=content),
                 timestamp=datetime.now()
             )
+            try:
+                if self.app.secure:
+                    send_secure_message(self.user.ip_address, generate_private_key(), content)
+                else:
+                    send_unsecure_message(self.user.ip_address, content)
+                self.display_message(message)
+                self.input.value = ""
+            except Exception as e:
+                self.app.log.error(f"Error sending message: {e}")
 
-            self.display_message(message)
-            self.input.value = ""
-        if self.app.secure:
-            send_secure_message(self.user.ip_address, generate_private_key(), content)
-        else:
-            send_unsecure_message(self.user.ip_address, content)
+
 
     def display_message(self, message: Message) -> None:
         formatted = Text()
