@@ -3,8 +3,7 @@ import json
 import socket
 from datetime import datetime
 import os
-from threading import Thread
-import p2chat.util.announce
+import p2chat.serviceAnnouncer
 import p2chat.util.encryption as encryption
 from p2chat.util.classes import User, MessageContent, Message, KeyExchange
 
@@ -37,7 +36,7 @@ def send_unsecure_message(target_ip, message_text):
 
         message_content = MessageContent(unencrypted_message=message_text)
         message = Message(
-            author=User(p2chat.util.announce.announceName, "localhost", datetime.now()),
+            author=User(p2chat.announce.announceName, "localhost", datetime.now()),
             content=message_content,
             timestamp=datetime.now()
         )
@@ -90,7 +89,7 @@ def send_secure_message(target_ip, secret_number, message_text):
         )
 
         message = Message(
-            author=User(p2chat.util.announce.announceName, "localhost", datetime.now()),
+            author=User(p2chat.announce.announceName, "localhost", datetime.now()),
             content=message_content,
             timestamp=datetime.now()
         )

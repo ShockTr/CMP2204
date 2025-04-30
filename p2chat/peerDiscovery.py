@@ -1,3 +1,4 @@
+import os
 import socket
 import threading
 import time
@@ -55,7 +56,7 @@ def listen_for_peers(port=6000):
 
 
 # Function to save peers to a file
-def save_peers_to_file(filename='users.json'):
+def save_peers_to_file(filename):
     try:
         with open(filename, 'r') as file:
             existing_peers = json.load(file)
@@ -71,7 +72,7 @@ def save_peers_to_file(filename='users.json'):
 
 
 # Function to periodically save peers to a file
-def periodic_save(interval=3, filename='users.json', stop_event=None):
+def periodic_save(filename, interval=3, stop_event=None):
     while stop_event is None or not stop_event.is_set():
         save_peers_to_file(filename)
 
@@ -94,7 +95,9 @@ def start_peer_discovery(log_callback=None):
     listener_thread.start()
 
     # Start the periodic save thread
-    save_thread = threading.Thread(target=periodic_save, args=(3, 'users.json', stop_event), daemon=True)
+    filename = os.path.join(os.path.dirname(os.path.realpath(__file__)), "users.json")
+
+    save_thread = threading.Thread(target=periodic_save, args=(filename, 3, stop_event), daemon=True)
     save_thread.start()
 
     if log_callback:

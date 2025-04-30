@@ -1,20 +1,15 @@
 from dataclasses import dataclass
-from datetime import datetime
-from time import time
 
 from textual.message import Message
-from textual.renderables.gradient import LinearGradient
-from textual.widgets import Input, Static, OptionList, Button
+from textual.widgets import Static, OptionList, Button
 from textual.widgets.option_list import Option
-from textual.containers import Vertical, Container, Horizontal
+from textual.containers import Vertical
 from textual.app import ComposeResult
 from rich.console import RenderResult, Console, ConsoleOptions
-from rich.markup import escape
-from rich.padding import Padding
 from rich.text import Text
 from p2chat.ui.widgets.SearhForIp import SearchWithIp
 from p2chat.util.classes import User
-from p2chat.util.peer_discovery import get_discovered_users
+from p2chat.peerDiscovery import get_discovered_users
 from p2chat.ui.widgets.SearhForIp import get_selected_users
 
 @dataclass

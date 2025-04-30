@@ -5,7 +5,7 @@ from datetime import datetime
 from threading import Thread
 import p2chat.util.encryption as encryption
 from p2chat.util.classes import KeyExchange, MessageContent, Message, User
-from p2chat.util.peer_discovery import get_discovered_users
+from p2chat.peerDiscovery import get_discovered_users
 
 
 def handleClient(conn: socket.socket, addr, callback):

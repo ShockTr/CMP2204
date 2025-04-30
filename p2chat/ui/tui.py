@@ -8,7 +8,7 @@ from textual.reactive import Reactive
 from textual.widgets import Footer, Header, Static
 from textual.worker import get_current_worker
 
-from p2chat.chatResponder import listenChatMessages, handleClient
+from p2chat.chatResponder import handleClient
 from p2chat.ui.widgets.ChangeName import ChangeNameScreen
 from textual.containers import Horizontal, Vertical
 
@@ -16,9 +16,9 @@ from p2chat.ui.widgets.SearhForIp import SearchWithIp
 from p2chat.ui.widgets.Sidebar import Sidebar, ChatOpened
 from p2chat.ui.widgets.MessageMenu import MessageMenu
 from p2chat.ui.widgets.LogDisplay import LogDisplay
-from p2chat.util.announce import start_announce_presence_thread
-from p2chat.util.peer_discovery import start_peer_discovery
-import p2chat.util.announce
+from p2chat.serviceAnnouncer import start_announce_presence_thread
+from p2chat.peerDiscovery import start_peer_discovery
+import p2chat.serviceAnnouncer
 from p2chat.util.classes import User, Message
 from datetime import datetime
 
@@ -44,7 +44,7 @@ class p2chatApp(App):
         self.sock = None
         self.message_menu = None
         self.secure: Reactive[bool] = Reactive(True, bindings=True)
-        self.user = User(p2chat.util.announce.announceName, "localhost", datetime.now())
+        self.user = User(p2chat.announce.announceName, "localhost", datetime.now())
 
     def compose(self) -> ComposeResult:
         yield Header()
@@ -151,7 +151,7 @@ class p2chatApp(App):
             self.announce_stop_event.set()
 
     def update_user_name(self, new_name: str):
-        p2chat.util.announce.announceName = new_name
+        p2chat.announce.announceName = new_name
         self.app.user = User(new_name, "localhost", datetime.now())
         try:
             self.query_one("#chat_window_header", Static).update(f"Chat as {new_name}")
