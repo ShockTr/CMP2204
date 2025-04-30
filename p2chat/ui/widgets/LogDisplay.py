@@ -1,5 +1,5 @@
 from textual.app import ComposeResult
-from textual.widgets import Log
+from textual.widgets import RichLog
 from textual.widget import Widget
 
 
@@ -7,12 +7,12 @@ class LogDisplay(Widget):
     """A widget to display log messages."""
 
     def __init__(self, id=None):
-        super().__init__(id=id or "log_display")
+        super().__init__(id=id)
 
     def compose(self) -> ComposeResult:
-        yield Log(id="log_content", highlight=True)
+        self.log_widget = RichLog(auto_scroll=True, wrap=True, highlight=True, min_width=39, id="log_display")
+        yield self.log_widget
 
     def add_log(self, message: str):
         """Add a log message to the display."""
-        log_widget = self.query_one("#log_content", Log)
-        log_widget.write_line(message)
+        self.log_widget.write(message)

@@ -27,7 +27,7 @@ class MessageMenu(Static):
 
     def compose(self) -> ComposeResult:
         with Vertical():
-            self.message_list = RichLog(auto_scroll=True, classes="message_list")
+            self.message_list = RichLog(auto_scroll=True, wrap=True, classes="message_list")
             yield self.message_list
 
             self.input= Input(placeholder="Send a message from here...", classes="message_input")

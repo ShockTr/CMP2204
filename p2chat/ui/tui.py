@@ -40,7 +40,7 @@ class p2chatApp(App):
         self.peer_listener_thread = None
         self.peer_save_thread = None
         self.peer_stop_event = None
-        self.log_display = LogDisplay(id="log_display")
+        self.log_display = LogDisplay(id="right_panel")
         self.sock = None
         self.message_menu = None
         self.secure: Reactive[bool] = Reactive(True, bindings=True)
@@ -52,8 +52,7 @@ class p2chatApp(App):
             yield Sidebar()
             with Vertical(id="chat_window"):
                 MessageMenu(self.currentChatUser)
-            with Vertical(id="right_panel"):
-                yield self.log_display
+            yield self.log_display
         yield Footer()
 
     def check_action(self, action: str, parameters: tuple[object, ...]) -> bool | None:

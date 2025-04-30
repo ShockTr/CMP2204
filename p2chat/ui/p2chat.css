@@ -82,22 +82,8 @@
 
 /* silinecek sonra */
 #log_display {
-    height: 100%;
-    width: 100%;
     border: solid green;
-    background: #333333;
-}
-
-#log_scroll {
-    height: 100%;
-    width: 100%;
-    overflow-y: auto;
-    dock: right;
-}
-
-#log_content {
-    padding: 1;
-    dock: right;
+    background: $surface;
 }
 
 #right_panel {
