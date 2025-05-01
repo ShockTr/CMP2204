@@ -10,7 +10,7 @@ class LogDisplay(Widget):
         super().__init__(id=id)
 
     def compose(self) -> ComposeResult:
-        self.log_widget = RichLog(auto_scroll=True, wrap=True, highlight=True, min_width=39, id="log_display")
+        self.log_widget = RichLog(auto_scroll=True, wrap=True, highlight=True, min_width=0, id="log_display")
         yield self.log_widget
 
     def add_log(self, message: str):

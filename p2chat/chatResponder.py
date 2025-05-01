@@ -11,11 +11,12 @@ from p2chat.util.history import save_message
 
 def handleClient(conn: socket.socket, addr, callback):
     print(f"New connection from {addr}")
-
-    user = User("Unknown", addr[0], datetime.now())
     users = get_discovered_users()
-    user = [user for user in users if user.ip_address == addr[0]][0]
-    # When merging with peerDiscovery branch proper username will be fetched
+    user: User
+    try:
+        user = [u for u in users if u.ip_address == addr[0]][0]
+    except IndexError:
+        user = User("Unknown", addr[0], datetime.now())
 
     KEYEXCHANGE = False
     key: KeyExchange = None

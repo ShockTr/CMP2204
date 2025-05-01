@@ -27,7 +27,7 @@ class MessageMenu(Static):
 
     def compose(self) -> ComposeResult:
         with Vertical():
-            self.message_list = RichLog(auto_scroll=True, wrap=True, classes="message_list")
+            self.message_list = RichLog(auto_scroll=True, wrap=True, min_width=0, classes="message_list")
             yield self.message_list
 
             self.input= Input(placeholder="Send a message from here...", classes="message_input")
@@ -74,7 +74,7 @@ class MessageMenu(Static):
         emojis += "🔑" if message.content.key else ""
         formatted = Text()
         formatted.append(message.timestamp.strftime('[%d.%m.%Y %H:%M]'), style="dimmed")
-        formatted.append(f" <{escape(message.author.username)} {emojis}>", style="bold")
+        formatted.append(f" <{escape(message.author.username)} {emojis}> ", style="bold")
         if (message.content.encrypted_message):
             formatted.append(f"{escape(decrypt_message(message.content.key.key, message.content.encrypted_message) if message.content.key else message.content.encrypted_message)}")
         elif (message.content.unencrypted_message):

@@ -51,6 +51,5 @@ def get_users_with_history(logger=print) -> list[User]:
                 users.append(user)
         return users
     except Exception as e:
-        raise e
         logger(f"Error getting users with history: {e}")
         return []

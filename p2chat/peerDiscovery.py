@@ -9,7 +9,7 @@ from p2chat.util.classes import User
 
 # Dictionary to store IP addresses
 peers = {}
-discovered_users = []
+discovered_users: list[User] = []
 
 
 # Function to handle incoming messages
