@@ -41,7 +41,7 @@ def handleClient(conn: socket.socket, addr, callback):
                     key = KeyExchange(recievedKey, privateKey)
 
                     try :
-                        conn.send(json.dumps({'key': encryption.generate_public_key(privateKey)}).encode())
+                        conn.send(json.dumps({'key': str(encryption.generate_public_key(privateKey))}).encode())
                     except Exception as e:
                         print(f"Error sending key: {e}")
                         break
