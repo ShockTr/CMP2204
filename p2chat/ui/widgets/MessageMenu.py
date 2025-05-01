@@ -48,14 +48,14 @@ class MessageMenu(Static):
                 if self.app.secure:
                     send_secure_message(self.user.ip_address, generate_private_key(), content)
                     message = Message(
-                        author=self.user,
+                        author=self.app.user,
                         content=MessageContent(encrypted_message=content),
                         timestamp=datetime.now()
                     )
                 else:
                     send_unsecure_message(self.user.ip_address, content)
                     message = Message(
-                        author=self.user,
+                        author=self.app.user,
                         content=MessageContent(unencrypted_message=content),
                         timestamp=datetime.now()
                     )
