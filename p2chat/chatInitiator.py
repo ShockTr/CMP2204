@@ -2,7 +2,6 @@ import binascii
 import json
 import socket
 from datetime import datetime
-import os
 import p2chat.serviceAnnouncer
 import p2chat.util.encryption as encryption
 from p2chat.util.classes import User, MessageContent, Message, KeyExchange

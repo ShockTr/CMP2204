@@ -1,5 +1,4 @@
 import random
-import hashlib
 import base64
 import pyDes
 

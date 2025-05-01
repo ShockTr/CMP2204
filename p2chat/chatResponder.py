@@ -1,5 +1,4 @@
 import json
-import os.path
 import socket
 from datetime import datetime
 from threading import Thread

@@ -1,23 +1,17 @@
-import json
-import os
-
-from textual.widgets import Input, Static, Label, RichLog
-from textual.containers import Vertical, VerticalScroll
+from textual.widgets import Input, Static, RichLog
+from textual.containers import Vertical
 from textual.app import ComposeResult
 from textual import on
 
 from rich.markup import escape
 from rich.text import Text
 
-from p2chat.util.classes import User, MessageContent, Message, KeyExchange
+from p2chat.util.classes import User, MessageContent, Message
 from p2chat.chatInitiator import send_secure_message, send_unsecure_message
-
-from dataclasses import dataclass
 from datetime import datetime
 
 from p2chat.util.encryption import generate_private_key, decrypt_message
 from p2chat.util.history import get_history
-
 
 class MessageMenu(Static):
     def __init__(self, user: User , *args , **kwargs ):

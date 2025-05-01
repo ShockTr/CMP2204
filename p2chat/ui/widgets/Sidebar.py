@@ -40,7 +40,6 @@ class Sidebar(Static):
         # Set a timer to refresh the user list every 5 seconds
         self.set_interval(1, self.refresh_user_list)
 
-    #şuan ipye gore sıralamadıgımız ıcın isim degisince farklı bır kullanıcı gıbı sayıyor ve zaten suan sadece kendını goruyor
     def refresh_user_list(self):
         #Refresh the list of users in the sidebar
 

@@ -70,7 +70,7 @@ class SearchWithIp(Screen):
 
     # userlisti guncellemek icin
     def on_mount(self):
-        #5 saniyede bir guncelle
+        #1 saniyede bir guncelle
         self.refresh_user_list()
         self.set_interval(1 , self.refresh_user_list)
 
