@@ -1,6 +1,7 @@
 # Project specific
 p2chat/users.json
 p2chat/history/*.jsonl
+BDK_ProjectReport.md
 
 
 
