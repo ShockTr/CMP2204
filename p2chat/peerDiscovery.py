@@ -35,6 +35,7 @@ def handle_message(data, addr):
     for i, user in enumerate(discovered_users):
         if user.userId == new_user.userId:
             # Update existing user's last_seen time
+            discovered_users[i].username = new_user.username
             discovered_users[i].last_seen = current_time
             user_exists = True
             break
