@@ -76,7 +76,7 @@ class ChatListItemRenderable:
         self, console: Console, options: ConsoleOptions
     ) -> RenderResult:
         text = Text()
-        text.append(f"{self.user.username}\n", style="bold  ")
+        text.append(f"{self.user.username}\n", style="bold")
         text.append(f"{self.user.getStatus()}", style="dim")
         yield text
 

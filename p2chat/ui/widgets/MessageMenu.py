@@ -73,7 +73,7 @@ class MessageMenu(Static):
         emojis = "🔒" if message.content.encrypted_message else "🔓"
         emojis += "🔑" if message.content.key else ""
         formatted = Text()
-        formatted.append(message.timestamp.strftime('[%d.%m.%Y %H:%M]'), style="dimmed")
+        formatted.append(message.timestamp.strftime('[%d.%m.%Y %H:%M]'), style="dim")
         formatted.append(f" <{escape(message.author.username)} {emojis}> ", style="bold")
         if (message.content.encrypted_message):
             formatted.append(f"{escape(decrypt_message(message.content.key.key, message.content.encrypted_message) if message.content.key else message.content.encrypted_message)}")
