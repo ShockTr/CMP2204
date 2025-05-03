@@ -3,7 +3,7 @@ import json
 import os
 from datetime import datetime
 
-from p2chat.util.classes import Message, User
+from p2chat.util.classes import Message, User, MessageContent
 
 history_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "history")
 if not os.path.isdir(history_dir):
@@ -16,7 +16,20 @@ def get_history(user_id, logger=print) -> list[Message]:
         return []
     try:
         with open(path, "r") as f:
-            messages = [Message.fromJSON(json.loads(line)) for line in f]
+            errorMessage = Message(
+                author=User("SYSTEM", "localhost", datetime.fromtimestamp(0)),
+                content=MessageContent(unencrypted_message="Error decoding message"),
+                timestamp=datetime.fromtimestamp(0),
+            )
+            messages = []
+            for line in f:
+                if line.strip():
+                    try:
+                        message = Message.fromJSON(json.loads(line))
+                        messages.append(message)
+                    except Exception:
+                        messages.append(errorMessage)
+                        logger(f"Error decoding line to JSON: {line.strip()}")
             return messages
     except Exception as e:
         logger(f"Error reading history: {e}")

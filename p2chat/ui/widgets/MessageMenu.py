@@ -70,7 +70,14 @@ class MessageMenu(Static):
         formatted.append(message.timestamp.strftime('[%d.%m.%Y %H:%M]'), style="dim")
         formatted.append(f" <{escape(message.author.username)} {emojis}> ", style="bold")
         if (message.content.encrypted_message):
-            formatted.append(f"{escape(decrypt_message(message.content.key.key, message.content.encrypted_message) if message.content.key else message.content.encrypted_message)}")
+            try:
+                formatted.append(
+                    f"{escape(decrypt_message(message.content.key.key, message.content.encrypted_message) if message.content.key else message.content.encrypted_message)}"
+                )
+            except Exception:
+                formatted.append("Couldn't decrypt the message", style="bold red")
+                formatted.append(f"(non decrtypted message: {escape(message.content.encrypted_message)})", style="bold red")
+
         elif (message.content.unencrypted_message):
             formatted.append(f"{escape(message.content.unencrypted_message)}")
         else:
