@@ -22,3 +22,22 @@ uv run p2chat
 
 ### Notes
 - Wireshark captures can be found in the `images/wireshark` folder.
+
+## Images
+
+### Tui
+| Images                                                                                                    |
+|-----------------------------------------------------------------------------------------------------------|
+| ![sendingMessageToYourselfSecure.png](images/project/sendingMessageToYourselfSecure.png) Message sending  |
+| ![searchUsers.png](images/project/searchUsers.png) Search Users                                           |
+| ![changeUsername.png](images/project/changeUsername.png)Change Username                                   |
+
+
+
+### Wireshark
+
+| Encrypted Messages                                                                             | Uncrypted message                                                                                     |
+|------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------|
+| ![Key send](images/wireshark/key_exchange1.png) Key Send                                       | ![Unencrypted message send](images/wireshark/unencrypted_message.png) Sending the message unencrypted |
+| ![Key receive](images/wireshark/key_exchange2.png) Key Receive                                 | -                                                                                                     |
+| ![encrypted_message.png](images/wireshark/encrypted_message.png) Sending the message encrypted | -                                                                                                     | 
